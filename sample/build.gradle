@@ -1,0 +1,37 @@
+buildscript {
+    repositories {
+      mavenCentral()
+    }
+    dependencies {
+        // Android plugin
+        classpath 'com.android.tools.build:gradle:+'
+        // the latest version of the android-apt plugin from https://bitbucket.org/hvisser/android-apt
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.2'
+    }
+}
+
+apply plugin: 'android'
+apply plugin: 'android-apt'
+
+repositories {
+     mavenCentral();
+}
+
+dependencies {
+    compile 'de.devland.esperandro:esperandro-api:2.1.0'
+    apt 'de.devland.esperandro:esperandro:2.1.0'
+
+    // optional, if we want to use object serialization but don't provide our own Serializer
+    // compile 'de.devland.esperandro:esperandro-gson-addon:2.1.0'
+        // or
+        // compile 'de.devland.esperandro:esperandro-jackson-addon:2.1.0'
+}
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    lintOptions {
+        abortOnError false
+    }
+}
