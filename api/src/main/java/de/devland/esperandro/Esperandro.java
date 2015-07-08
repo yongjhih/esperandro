@@ -52,6 +52,7 @@ public class Esperandro {
      *
      * @param preferenceClass The interface whose implementation should be returned.
      * @param context         A context to be able to construct the android SharedPreference.
+     * @param <T>             The class of the preference to instantiate.
      * @return An instance of the given interface.
      */
     @SuppressWarnings("unchecked")
@@ -82,8 +83,21 @@ public class Esperandro {
         Esperandro.getInstance().serializer = serializer;
     }
 
-    @SuppressWarnings("unchecked")
+
     private static Serializer getDefaultSerializer() {
+        Serializer defaultSerializer = null;
+        // try to get gsonSerializer first
+        defaultSerializer = getGsonSerializer();
+        if (defaultSerializer == null) {
+            // try to get jacksonSerializer afterwards
+            defaultSerializer = getJacksonSerializer();
+        }
+
+        return defaultSerializer;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Serializer getGsonSerializer() {
         Serializer defaultSerializer = null;
         try {
             Class<? extends Serializer> defaultSerializerClass = (Class<? extends Serializer>) Class.forName("de" + "" +
@@ -92,7 +106,19 @@ public class Esperandro {
         } catch (Exception e) {
             Log.w(TAG, "Default Serializer (GsonSerializer) not present.");
         }
+        return defaultSerializer;
+    }
 
+    @SuppressWarnings("unchecked")
+    private static Serializer getJacksonSerializer() {
+        Serializer defaultSerializer = null;
+        try {
+            Class<? extends Serializer> defaultSerializerClass = (Class<? extends Serializer>) Class.forName("de" + "" +
+                    ".devland.esperandro.serialization.JacksonSerializer");
+            defaultSerializer = defaultSerializerClass.newInstance();
+        } catch (Exception e) {
+            Log.w(TAG, "Default Serializer (JacksonSerializer) not present.");
+        }
         return defaultSerializer;
     }
 
